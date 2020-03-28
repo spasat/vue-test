@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../pages/Home.vue'
 import Login from '../pages/Login';
+import Register from '../pages/Register';
 import store from '../store';
 
 Vue.use(VueRouter)
@@ -11,6 +12,15 @@ const requireAuthGuard = function (from, to, next) {
         next({name: 'login'});
         return;
     }
+    next();
+}
+
+const alreadyAuthGuard = function (to, from, next) {
+    if (store.getters.isLoggedIn) {
+        next({name: 'home'});
+        return;
+    }
+
     next();
 }
 
@@ -25,14 +35,13 @@ const routes = [
         path: '/login',
         name: 'login',
         component: Login,
-        beforeEnter(to, from, next) {
-            if (store.getters.isLoggedIn) {
-                next({name: 'home'});
-                return;
-            }
-
-            next();
-        }
+        beforeEnter: alreadyAuthGuard
+    },
+    {
+        path: '/register',
+        name: 'register',
+        component: Register,
+        beforeEnter: alreadyAuthGuard
     },
     // An example of lazzy loading
     // {

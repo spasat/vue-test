@@ -1,6 +1,6 @@
 <template>
-    <div class="section">
-        <div id="login" class="login columns is-centered">
+    <div id="login" class="section">
+        <div class="columns is-centered">
             <div class="column is-one-third has-background-white-ter has-round-border has-shadow">
                 <form @submit.prevent="onSubmit()">
                     <h3 class="title is-3 has-text-centered">Login</h3>
@@ -34,6 +34,11 @@
                     <div class="field">
                         <div class="control">
                             <a href="">Forgot password!</a>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="control">
+                            <router-link :to="{name: 'register'}" class="is-link">Register</router-link>
                         </div>
                     </div>
                     <div class="field">
