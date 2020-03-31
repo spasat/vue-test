@@ -1,7 +1,7 @@
 <template>
     <div id="login" class="row d-flex justify-content-center">
         <div class="col-md-5 pt-5">
-            <div class="card">
+            <div class="card shadow">
                 <div class="card-body">
                     <form @submit.prevent="onSubmit()" class="form">
                         <h3 class="text-center">Login</h3>
@@ -52,8 +52,8 @@
         name: "Login",
         data() {
             return {
-                username: '',
-                password: '',
+                username: null,
+                password: null,
                 formDisabled: false
             };
         },

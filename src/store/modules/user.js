@@ -66,6 +66,7 @@ export default {
             return axios.post('/login_check', credentials)
                 .then((res) => {
                     commit('saveToken', res.data.token);
+                    return res;
                 })
                 .catch((reason) => {
                     commit('setLoginError', reason)

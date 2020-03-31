@@ -1,7 +1,9 @@
 <template>
-    <div class="container">
+    <div class="app">
         <Navigation v-if="isLoggedIn"/>
-        <router-view/>
+        <div class="container pt-5">
+            <router-view/>
+        </div>
     </div>
 </template>
 
@@ -14,7 +16,7 @@
         components: {Navigation},
         computed: {
             ...mapGetters(['isLoggedIn'])
-        }
+        },
     }
 </script>
 

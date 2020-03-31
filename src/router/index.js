@@ -4,6 +4,7 @@ import Home from '../pages/Home.vue'
 import Login from '../pages/Login';
 import Register from '../pages/Register';
 import {requireAuthGuard, alreadyAuthGuard} from './auth-gurads';
+import NotFound from '../pages/NotFound';
 
 Vue.use(VueRouter)
 
@@ -26,15 +27,16 @@ const routes = [
         component: Register,
         beforeEnter: alreadyAuthGuard
     },
-    // An example of lazzy loading
-    // {
-    //   path: '/login',
-    //   name: 'Login',
-    //   // route level code-splitting
-    //   // this generates a separate chunk (about.[hash].js) for this route
-    //   // which is lazy-loaded when the route is visited.
-    //   component: () => import(/* webpackChunkName: "about" */ '../pages/Login.vue')
-    // }
+    {
+        path: '/404',
+        name: 'not-found',
+        component: NotFound,
+        beforeEnter: requireAuthGuard
+    },
+    {
+        path: '*',
+        redirect: '/404',
+    }
 ]
 
 const router = new VueRouter({

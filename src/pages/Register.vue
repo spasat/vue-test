@@ -1,6 +1,6 @@
 <template>
     <div id="register" class="row d-flex justify-content-center  pt-5">
-        <div class="col-md-5 card">
+        <div class="col-md-5 card shadow">
             <div class="card-body">
                 <form :class="{'was-validated': formWasValidated}" @submit.prevent="onSubmit" novalidate>
                     <h3 class="text-center">Register</h3>

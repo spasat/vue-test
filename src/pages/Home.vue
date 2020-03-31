@@ -1,5 +1,5 @@
 <template>
-    <div id="home" class="section">
+    <div id="home" class="container">
         <h1 class="title is-1 is-centered">Home</h1>
     </div>
 </template>

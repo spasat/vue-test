@@ -1,64 +1,30 @@
 <template>
-    <div id="navigation" class="is-light">
-        <nav class="navbar is-white" role="navigation" aria-label="main navigation">
-            <div class="navbar-brand">
-                <a class="navbar-item logo" href="/">
+    <div id="navigation" class="container">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
+                    aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarToggle">
+                <router-link :to="{name: 'home'}">
                     <img src="../assets/logo.png" height="28">
-                </a>
-
-                <a role="button"
-                   class="navbar-burger burger"
-                   :class="{'is-active': isActive }"
-                   @click="toggleBurgerMenu"
-                   aria-label="menu"
-                   aria-expanded="false"
-                   data-target="navbarBasicExample">
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                </a>
-            </div>
-
-            <div id="navbarBasicExample" class="navbar-menu" :class="{'is-active': isActive}">
-                <div class="navbar-start">
-                    <router-link :to="{name: 'home'}" class="navbar-item">Home</router-link>
-
-                    <a class="navbar-item">
-                        Documentation
-                    </a>
-
-                    <div class="navbar-item has-dropdown is-hoverable">
-                        <a class="navbar-link">
-                            More
-                        </a>
-
-                        <div class="navbar-dropdown">
-                            <a class="navbar-item">
-                                About
-                            </a>
-                            <a class="navbar-item">
-                                Jobs
-                            </a>
-                            <a class="navbar-item">
-                                Contact
-                            </a>
-                            <hr class="navbar-divider">
-                            <a class="navbar-item">
-                                Report an issue
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="navbar-end">
-                    <div class="navbar-item">
-                        <div class="buttons">
-                            <a class="button is-danger" @click="logout()">
-                                Log out
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                </router-link>
+                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                    <li class="nav-item active">
+                        <router-link class="nav-link" :to="{name: 'home'}">
+                            Home <span class="sr-only">(current)</span>
+                        </router-link>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <b-nav-item-dropdown right>
+                        <template v-slot:button-content>
+                            <em>User</em>
+                        </template>
+                        <b-dropdown-item href="#">Profile</b-dropdown-item>
+                        <b-dropdown-item @click="doLogout()">Log Out</b-dropdown-item>
+                    </b-nav-item-dropdown>
+                </ul>
             </div>
         </nav>
     </div>
@@ -66,9 +32,13 @@
 
 <script>
     import {mapActions} from 'vuex';
+    import {BNavItemDropdown} from 'bootstrap-vue'
 
     export default {
         name: "Navigation",
+        components: {
+            BNavItemDropdown
+        },
         data() {
             return {
                 isActive: false
@@ -78,13 +48,14 @@
             ...mapActions(['logout']),
             toggleBurgerMenu() {
                 this.isActive = !this.isActive;
+            },
+            doLogout() {
+                this.logout();
+                this.$router.push({name: 'login'});
             }
         }
     }
 </script>
 
 <style scoped lang="scss">
-    #navigation {
-        border: 2px solid #f5f5f5;
-    }
 </style>
