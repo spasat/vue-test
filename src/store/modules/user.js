@@ -4,10 +4,12 @@ const jwt_decode = require('jwt-decode')
 
 export default {
     state: {
+        // Keep token for refresh token functionality
         token: null,
         expire: null,
         user: null,
-        loginError: null
+        loginError: null,
+        registerErrors: null
     },
     getters: {
         isLoggedIn(state) {
@@ -21,6 +23,9 @@ export default {
         },
         loginError(state) {
             return state.loginError;
+        },
+        registerErrors(state) {
+            return state.registerErrors;
         }
     },
     mutations: {
@@ -30,7 +35,6 @@ export default {
             state.token = token;
             state.user = decodedToken.user;
             state.expire = decodedToken.exp;
-            console.log('Token saved: ')
         },
         setLoginError(state, reason) {
             state.loginError = {
@@ -38,8 +42,17 @@ export default {
                 message: reason.response.data.message
             }
         },
+        setRegisterErrors(state, reason) {
+            state.registerErrors = [{
+                code: reason.response.code || 500,
+                message: reason.response.data.message
+            }];
+        },
         cleanLoginError(state) {
             state.loginError = null
+        },
+        cleanRegisterErrors(state) {
+            state.registerErrors = null
         },
         removeToken(state) {
             state.token = null
@@ -48,18 +61,11 @@ export default {
         }
     },
     actions: {
-        checkForToken({commit}) {
-            const localStorageToken = localStorage.getItem('token') || false;
-            if (localStorageToken) {
-                commit('saveToken', localStorageToken);
-            }
-        },
         login({commit}, credentials) {
             commit('cleanLoginError');
             return axios.post('/login_check', credentials)
                 .then((res) => {
                     commit('saveToken', res.data.token);
-                    localStorage.setItem('token', res.data.token);
                 })
                 .catch((reason) => {
                     commit('setLoginError', reason)
@@ -67,7 +73,16 @@ export default {
         },
         logout({commit}) {
             commit('removeToken');
-            localStorage.removeItem('token');
+        },
+        register({commit}, user) {
+            commit('cleanRegisterErrors');
+            return axios.post('/users/register', user)
+                .then((res) => {
+                    return res;
+                })
+                .catch((reason) => {
+                    commit('setRegisterErrors', reason)
+                });
         }
     },
 }

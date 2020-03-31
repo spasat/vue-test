@@ -1,77 +1,88 @@
 <template>
-    <div id="register" class="section">
-        <div class="columns is-centered">
-            <div class="column is-one-third has-background-white-ter has-round-border has-shadow">
-                <form @submit.prevent="onSubmit()">
-                    <h3 class="title is-3 has-text-centered">Register</h3>
-                    <div class="field">
-                        <p class="help" :class="{'is-danger': registerError}" v-if="registerError">
-                            {{loginError.message}}
+    <div id="register" class="row d-flex justify-content-center  pt-5">
+        <div class="col-md-5 card">
+            <div class="card-body">
+                <form :class="{'was-validated': formWasValidated}" @submit.prevent="onSubmit" novalidate>
+                    <h3 class="text-center">Register</h3>
+
+                    <ul v-if="this.registerErrors">
+                        <li v-for="(item, index) in this.registerErrors" :key="index" class="text-danger">
+                            {{item.message}}
+                        </li>
+                    </ul>
+
+                    <div class="form-group">
+                        <label for="username">Email <small class="text-danger">*</small></label>
+                        <input id='username' type="text"
+                               class="form-control"
+                               placeholder="Email"
+                               :class="{'is-invalid': validationErrors.email}"
+                               v-model="registerUser.email"/>
+                        <p class="invalid-feedback" v-if="validationErrors.email">
+                            {{errorMessages.require}}
                         </p>
                     </div>
-                    <div class="field">
-                        <label for="username" class="label">
-                            Email
-                        </label>
-                        <div class="control">
-                            <input id='username' type="text"
-                                   class="input"
-                                   v-model="register.email"
-                                   placeholder="Email"/>
-                        </div>
+                    <div class="form-group">
+                        <label for="first_name">First Name <small class="text-danger">*</small></label>
+                        <input id='first_name' type="text"
+                               class="form-control"
+                               :class="{'is-invalid': validationErrors.firstName}"
+                               v-model="registerUser.firstName"
+                               placeholder="First Name"/>
+                        <p class="invalid-feedback" v-if="validationErrors.firstName">
+                            {{errorMessages.require}}
+                        </p>
                     </div>
-                    <div class="field">
-                        <label for="first_name" class="label">
-                            First Name
-                        </label>
-                        <div class="control">
-                            <input id='first_name' type="text"
-                                   class="input"
-                                   v-model="register.first_name"
-                                   placeholder="First Name"/>
-                        </div>
+                    <div class="form-group">
+                        <label for="last_name">Last Name <small class="text-danger">*</small></label>
+                        <input id='last_name' type="text"
+                               class="form-control"
+                               :class="{'is-invalid': validationErrors.lastName}"
+                               v-model="registerUser.lastName"
+                               placeholder="Last Name"/>
+                        <p class="invalid-feedback" v-if="validationErrors.lastName">
+                            {{errorMessages.require}}
+                        </p>
                     </div>
-                    <div class="field">
-                        <label for="last_name" class="label">
-                            Last Name
-                        </label>
-                        <div class="control">
-                            <input id='last_name' type="text"
-                                   class="input"
-                                   v-model="register.last_name"
-                                   placeholder="Last Name"/>
-                        </div>
+                    <div class="form-group">
+                        <label for="password">Password <small class="text-danger">*</small></label>
+                        <input id='password' type="password" class="form-control"
+                               :class="{'is-invalid': validationErrors.password}"
+                               v-model="registerUser.password"
+                               placeholder="Password"/>
+                        <p class="invalid-feedback" v-if="validationErrors.password">
+                            {{errorMessages.require}}
+                        </p>
                     </div>
-                    <div class="field">
-                        <label for="password" class="label">
-                            Password
-                        </label>
-                        <div class="control">
-                            <input id='password' type="password" class="input"
-                                   v-model="register.password"
-                                   placeholder="Password"/>
-                        </div>
+                    <div class="form-group">
+                        <label for="password_confirm">Confirm Password <small class="text-danger">*</small></label>
+                        <input id='password_confirm' type="password"
+                               class="form-control"
+                               placeholder="Confirm Password"
+                               :class="{'is-invalid': validationErrors.passwordConfirmed || passwordConfirmedError}"
+                               :invalid="true"
+                               v-model="registerUser.passwordConfirmed"
+                        />
+                        <p class="invalid-feedback">
+                            <span v-if="validationErrors.passwordConfirmed">
+                                {{errorMessages.require}}
+                            </span>
+                            <span v-if="passwordConfirmedError">
+                                {{errorMessages.passwordConfirm}}
+                            </span>
+                        </p>
                     </div>
-                    <div class="field">
-                        <label for="password_confirm" class="label">
-                            Confirm Password
-                        </label>
-                        <div class="control">
-                            <input id='password_confirm' type="password" class="input"
-                                   v-model="register.password_confirmed"
-                                   placeholder="Confirm Password"/>
+                    <div class="row mt-5">
+                        <div class="col-md-6 text-left">
+                            <router-link :to="{name: 'login'}" class="btn btn-link">
+                                <i class="fas fa-sign-in-alt"></i>
+                                Log In
+                            </router-link>
                         </div>
-                    </div>
-                    <div class="field is-grouped">
-                        <div class="control is-expanded">
-                            <router-link :to="{name: 'login'}" class="button">Log In</router-link>
-                        </div>
-                        <div class="control">
-                            <button type="submit" class="button is-primary" :disabled="this.formDisabled">
-                                <span class="icon">
-                                    <i class="fas fa-check-circle"></i>
-                                </span>
-                                <span>Register</span>
+                        <div class="col-md-6 text-right">
+                            <button type="submit" class="btn btn-primary" :disabled="isFormDisabled">
+                                <i class="fas fa-check-circle"></i>
+                                Register
                             </button>
                         </div>
                     </div>
@@ -82,24 +93,80 @@
 </template>
 
 <script>
+    import {mapActions, mapGetters} from 'vuex';
+
     export default {
         name: "Register",
         data() {
             return {
-                formDisabled: false,
-                registerError: null,
-                register: {
+                isFormDisabled: false,
+                formWasValidated: false,
+                registerUser: {
                     email: null,
-                    first_name: null,
-                    last_name: null,
+                    firstName: null,
+                    lastName: null,
                     password: null,
-                    password_confirmed: null
+                    passwordConfirmed: null
+                },
+                validationErrors: {
+                    email: false,
+                    firstName: false,
+                    lastName: false,
+                    password: false,
+                    passwordConfirmed: false
+                },
+                passwordConfirmedError: false,
+                errorMessages: {
+                    require: 'This field is required!',
+                    passwordConfirm: 'The password confirmation should match with password!'
                 }
+            }
+        },
+        computed: {
+            ...mapGetters(['registerErrors']),
+            isFormValid() {
+                return !Object.keys(this.validationErrors).some(key => this.validationErrors[key]) &&
+                    !this.passwordConfirmedError
+            }
+        },
+        methods: {
+            ...mapActions(['register']),
+            validatePasswordConfirmation() {
+                this.passwordConfirmedError = this.registerUser.password !== this.registerUser.passwordConfirmed;
+            },
+            onSubmit(e) {
+                e.preventDefault();
+                this.validateForm()
+                if (this.isFormValid) {
+                    this.isFormDisabled = true;
+                    this.register(this.registerUser)
+                        .then((res) => {
+                            if (res.status === 201) {
+                                this.$router.push({name: 'login'});
+                            }
+                            this.isFormDisabled = false;
+                            this.formWasValidated = false;
+                        });
+                }
+            },
+            validateForm() {
+                this.formWasValidated = false;
+                Object
+                    .keys(this.registerUser)
+                    .forEach(item => {
+                        return this.validationErrors[item] = this.registerUser[item] === null
+                            || this.registerUser[item] === '';
+                    });
+                this.validatePasswordConfirmation();
+                this.formWasValidated = true;
             }
         }
     }
 </script>
 
 <style lang="scss">
-
+    .form-control.is-invalid {
+        border-color: #dc3545 !important;
+        background-image: none !important;
+    }
 </style>

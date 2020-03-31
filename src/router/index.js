@@ -3,26 +3,9 @@ import VueRouter from 'vue-router'
 import Home from '../pages/Home.vue'
 import Login from '../pages/Login';
 import Register from '../pages/Register';
-import store from '../store';
+import {requireAuthGuard, alreadyAuthGuard} from './auth-gurads';
 
 Vue.use(VueRouter)
-
-const requireAuthGuard = function (from, to, next) {
-    if (!store.getters.isLoggedIn) {
-        next({name: 'login'});
-        return;
-    }
-    next();
-}
-
-const alreadyAuthGuard = function (to, from, next) {
-    if (store.getters.isLoggedIn) {
-        next({name: 'home'});
-        return;
-    }
-
-    next();
-}
 
 const routes = [
     {
